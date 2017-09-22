@@ -1,0 +1,27 @@
+{
+  "name": "BuyMore",
+  "homepage": "https://github.com/vailydia/IERG4210_2017",
+  "authors": [
+    "vailydia <vailydia@hotmail.com>"
+  ],
+  "description": "shopping mall online",
+  "main": "index.html",
+  "keywords": [
+    "online",
+    "shopping",
+    "mall"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "font-awesome": "^4.7.0"
+  }
+}
