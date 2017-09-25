@@ -1,0 +1,98 @@
+
+.row-header {
+  margin: 0px auto;
+  padding: 0px 0px;
+}
+
+.row-footer {
+  margin: 0px auto;
+  padding: 20px 0px;
+  background-color: #f1f1f1;
+}
+
+.navbar-inverse {
+  background: #0a9faf;
+  border-color:#0a9faf;
+}
+
+header {
+  padding: 60px;
+  background-color: #f1f1f1;
+}
+
+#logo {
+  color: #0a9faf;
+}
+
+#subnavbar {
+  width: 180px;
+  list-style-type: none;
+}
+
+#subnavbar li{
+    border-color: black;
+    background-color: #f1f1f1;
+}
+
+#subnavbar li a {
+    display: block;
+    color: black;
+    padding: 15px 20px;
+    text-decoration: none;
+}
+
+#subnavbar li a.active {
+    background-color: #0a9faf;
+    color: white;
+}
+
+#subnavbar li a:hover:not(.active) {
+    background-color: #555;
+    color: white;
+}
+
+.shoppingList {
+  float: right;
+  padding-bottom: 10px;
+}
+
+#listButton {
+  background-color: #0a9faf;
+  color: white;
+  display: block;
+  padding: 10px 20px;
+  text-decoration: none;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  width: 127px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  padding: 12px 16px;
+}
+
+.shoppingList:hover .dropdown-content {
+  display: block;
+}
+
+.productTable {
+  width: 100%;
+  list-style:none;
+  overflow:auto;
+}
+
+
+.productTable li {
+  margin: 20px;
+  width:150px;
+  height:150px;
+  float:left;
+  /* border:1px solid #CCC*/
+
+}
+
+.contentright {
+  display: inline-block;
+}
