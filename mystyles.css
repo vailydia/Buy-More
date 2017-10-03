@@ -13,15 +13,45 @@
 .navbar-inverse {
   background: #0a9faf;
   border-color:#0a9faf;
+  font-size: 18px;
+  margin-bottom: 0px;
 }
 
-header {
+.navbar-inverse .navbar-nav li {
+    color: black;
+}
+
+.navbar-inverse .navbar-nav li a.active {
+    background-color: #0b98a8;
+    color: white;
+}
+
+.navbar-inverse .navbar-nav li a.active:hover {
+  background: #27ddf1;
+  color: white;
+}
+
+.navbar-inverse .navbar-nav li a:hover:not(.active) {
+    background-color: #27ddf1;
+    color: white;
+}
+
+.header {
   padding: 60px;
   background-color: #f1f1f1;
+  background-image: url("images/logo_meitu_1.png");
+  background-size: 40% 80%;
+  background-repeat: no-repeat;
+  background-position: 40% 80%;
 }
 
 #logo {
   color: #0a9faf;
+}
+
+.logo-link {
+padding: 10px 5px;
+
 }
 
 #subnavbar {
@@ -73,9 +103,11 @@ header {
   padding: 12px 16px;
 }
 
+/*
 .shoppingList:hover .dropdown-content {
   display: block;
 }
+*/
 
 .productTable {
   width: 100%;
