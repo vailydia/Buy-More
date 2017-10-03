@@ -14,15 +14,16 @@ function showShoppingCart(){
 
     var cartElement = document.getElementsByClassName("dropdown-content");
     var para=document.createElement("p");
-    var text = "<ul>";
+    var text = "";
 
     for (var i = 0; i < shoppingCart.length; i++) {
         var value = shoppingCart[i];
-        text += "<li>" + value + "</li>";
+        text += value + " ";
     }
-    text += "</ul>";
-    var node=document.createTextNode(text);
-    para.appendChild(node);
+    //var node=document.createTextNode(text);
+    //para.appendChild(node);
+    para.innerHTML = text;
+
     cartElement[0].insertBefore(para,cartElement[0].firstChild);
 
     var total=document.createElement("p");
