@@ -1,0 +1,16 @@
+fieldset{width:200px}
+form label{clear:left;float:left;width:90px;line-height:20px}
+form div{padding:5px 0}
+input[type=text],input[type=number],select,textarea{width:150px}
+
+
+#categoryList span{cursor:pointer;text-decoration:underline;color:#00F}
+#categoryList span:hover{text-decoration:none}
+#categoryList span.edit, #categoryList span.delete{float:right;padding-right:40px}
+
+#productList span{cursor:pointer;text-decoration:underline;color:#00F}
+#productList span:hover{text-decoration:none}
+#productList span.edit, #productList span.delete{float:right;padding-right:40px}
+
+.hide{display:none}
+.clear{clear:both}
