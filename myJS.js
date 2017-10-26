@@ -3,14 +3,29 @@
 
 	function updateUI() {
 		myLib.get({action:'cat_fetchall'}, function(json){
-			for (var subNavibarItems = [],i = 0, cat; cat = json[i]; i++) {
+			for (var subNavibarItems = [],productListItem = [],i = 0, cat; cat = json[i]; i++) {
 				subNavibarItems.push('<li id="cat' , parseInt(cat.catid) ,'">', '<a href="#">' ,  '<span class="name">' , cat.name.escapeHTML() , '</span></a></li>');
+
+				myLib.get({action:'prod_fetch',catid:parseInt(cat.catid)}, function(jsonP){
+					for (var j = 0, prod; prod = jsonP[j]; j++) {
+							productListItem.push('<li id="prod' , parseInt(prod.pid) ,'">',
+							 '<div class = "media"><a class="media-top" href="product.html"><img class="media-object" src="incl/img/' , prod.pid , '.jpg" width="100" height="100" alt="productcell"></a>' ,
+							 '<div class="media-body"><h4 class="media-heading">', '<span class="name">' , prod.name.escapeHTML() , '</span></h4>$',prod.price,'&nbsp&nbsp&nbsp',
+							 '<button type="button">Add</button></div></div></li>');
+					}
+					if(i == json.length){
+						el('productListDetails').innerHTML = productListItem.join('');
+					}
+
+				});
+
 			}
 			el('subnavbar').innerHTML = subNavibarItems.join('');
+			el('breadcrumbDetails').innerHTML = '<li class="active"><a href="index.html">Home</a></li>';
+
 		});
 
 
-		el('productList').innerHTML = '';
 	}
 	updateUI();
 
@@ -22,15 +37,32 @@
 			id = target.parentNode.id.replace(/^cat/, ''),
 			name = target.parentNode.querySelector('.name').innerHTML;
 
+
 			myLib.get({action:'prod_fetch',catid:id}, function(json){
 				for (var productListItems = [],i = 0, prod; prod = json[i]; i++) {
-					  productListItems.push('<li id="prod' , parseInt(prod.pid) ,'">', '<a href="#">' ,  '<span class="name">' , prod.name.escapeHTML() , '</span></a></li>');
+					  //productListItems.push('<li id="prod' , parseInt(prod.pid) ,'">', '<a href="#">' ,  '<span class="name">' , prod.name.escapeHTML() , '</span></a></li>');
+						productListItems.push('<li id="prod' , parseInt(prod.pid) ,'">',
+						 '<div class = "media"><a class="media-top" href="product.html"><img class="media-object" src="incl/img/' , prod.pid , '.jpg" width="100" height="100" alt="productcell"></a>' ,
+						 '<div class="media-body"><h4 class="media-heading">', '<span class="name">' , prod.name.escapeHTML() , '</span></h4>$',prod.price,'&nbsp&nbsp&nbsp',
+						 '<button type="button">Add</button></div></div></li>');
 				}
 				el('productListDetails').innerHTML = productListItems.join('');
 
 			});
 
+			//update the breadcrumb and subNavibar
+			var breadcrumbItem = [];
+			breadcrumbItem.push('<li><a href="index.html">Home</a></li><li class = "active">', name ,'</li>');
+			el('breadcrumbDetails').innerHTML = breadcrumbItem.join('');
+
+			var catname = 'cat'.id;
+			el('catname').setAttribute("class", "active");
+
 	}
+
+
+	//handle to deploy the detail of products
+	
 
 
 

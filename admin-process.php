@@ -69,7 +69,7 @@ function ierg4210_prod_insert() {
 		throw new Exception("invalid-name");
 	if (!preg_match('/^[\d\.]+$/', $_POST['price']))
 		throw new Exception("invalid-price");
-	if (!preg_match('/^[\w\- ]+$/', $_POST['description']))
+	if (!preg_match('/^[\w\-\. ]+$/', $_POST['description']))
 		throw new Exception("invalid-text");
 
 	$sql="INSERT INTO products (catid, name, price, description) VALUES (?, ?, ?, ?)";
@@ -87,17 +87,21 @@ function ierg4210_prod_insert() {
 		$q->execute(array($_POST['catid'],$_POST['name'],$_POST['price'],$_POST['description']));
 		$lastId = $db->lastInsertId();
 
+
 		// Note: Take care of the permission of destination folder (hints: current user is apache)
 		if (move_uploaded_file($_FILES["file"]["tmp_name"], "incl/img/" . $lastId . ".jpg")) {
 		// redirect back to original page; you may comment it during debug
-			header('Location: admin.php');
+			//echo " move success ";
+			header('Location: index.html');
 			exit();
 		}
 	}
 	// Only an invalid file will result in the execution below
 	// To replace the content-type header which was json and output an error message
+
 	header('Content-Type: text/html; charset=utf-8');
 	echo 'Invalid file detected. <br/><a href="javascript:history.back();">Back to admin panel.</a>';
+
 	exit();
 }
 
@@ -145,13 +149,39 @@ function ierg4210_prod_edit() {
         throw new Exception("invalid-name");
     if (!preg_match('/^[\d\.]+$/', $_POST['price']))
         throw new Exception("invalid-price");
-    if (!preg_match('/^[\w\- ]+$/', $_POST['description']))
+    if (!preg_match('/^[\w\-\. ]+$/', $_POST['description']))
         throw new Exception("invalid-text");
 
     $_POST['pid'] = $_POST['pid'];
     $q = $db->prepare("UPDATE products SET catid=?,name=?,price=?,description=? WHERE pid = ?;");
 
-    return $q->execute(array($_POST['catid'],$_POST['name'],$_POST['price'],$_POST['description'],$_POST['pid']));
+		if ($_FILES["file"]["error"] == 0
+			&& $_FILES["file"]["type"] == "image/jpeg"
+			&& mime_content_type($_FILES["file"]["tmp_name"]) == "image/jpeg"
+			&& $_FILES["file"]["size"] < 5000000) {
+
+			$q->execute(array($_POST['catid'],$_POST['name'],$_POST['price'],$_POST['description'],$_POST['pid']));
+
+			// Note: Take care of the permission of destination folder (hints: current user is apache)
+			if (move_uploaded_file($_FILES["file"]["tmp_name"], "incl/img/" . $_POST['pid']. ".jpg")) {
+			// redirect back to original page; you may comment it during debug
+				//echo " move success ";
+				header('Location: index.html');
+				exit();
+			}
+		}
+		// Only an invalid file will result in the execution below
+		// To replace the content-type header which was json and output an error message
+
+		header('Content-Type: text/html; charset=utf-8');
+		echo 'Invalid file detected. <br/><a href="javascript:history.back();">Back to admin panel.</a>';
+
+		exit();
+
+
+
+
+
 
 }
 

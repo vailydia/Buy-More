@@ -124,18 +124,6 @@
 	}
 
 
-  //submit for product
-  el('prod_insert').onsubmit = function() {
-    return myLib.submit(this, updateUI);
-  }
-  el('prod_edit').onsubmit = function() {
-    return myLib.submit(this, function() {
-      // toggle the edit/view display
-      el('productEditPanel').hide();
-      el('productPanel').show();
-      updateUI();
-    });
-  }
   el('prod_edit_cancel').onclick = function() {
     // toggle the edit/view display
     el('productEditPanel').hide();
