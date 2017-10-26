@@ -9,7 +9,7 @@
 				myLib.get({action:'prod_fetch',catid:parseInt(cat.catid)}, function(jsonP){
 					for (var j = 0, prod; prod = jsonP[j]; j++) {
 							productListItem.push('<li id="prod' , parseInt(prod.pid) ,'">',
-							 '<div class = "media"><a class="media-top" href="product.html"><img class="media-object" src="incl/img/' , prod.pid , '.jpg" width="100" height="100" alt="productcell"></a>' ,
+							 '<div class = "media"><a class="media-top" href="#"><img class="media-object" src="incl/img/' , prod.pid , '.jpg" width="100" height="100" alt="productcell"></a>' ,
 							 '<div class="media-body"><h4 class="media-heading">', '<span class="name">' , prod.name.escapeHTML() , '</span></h4>$',prod.price,'&nbsp&nbsp&nbsp',
 							 '<button type="button">Add</button></div></div></li>');
 					}
@@ -42,7 +42,7 @@
 				for (var productListItems = [],i = 0, prod; prod = json[i]; i++) {
 					  //productListItems.push('<li id="prod' , parseInt(prod.pid) ,'">', '<a href="#">' ,  '<span class="name">' , prod.name.escapeHTML() , '</span></a></li>');
 						productListItems.push('<li id="prod' , parseInt(prod.pid) ,'">',
-						 '<div class = "media"><a class="media-top" href="product.html"><img class="media-object" src="incl/img/' , prod.pid , '.jpg" width="100" height="100" alt="productcell"></a>' ,
+						 '<div class = "media"><a class="media-top" href="#"><img class="media-object" src="incl/img/' , prod.pid , '.jpg" width="100" height="100" alt="productcell"></a>' ,
 						 '<div class="media-body"><h4 class="media-heading">', '<span class="name">' , prod.name.escapeHTML() , '</span></h4>$',prod.price,'&nbsp&nbsp&nbsp',
 						 '<button type="button">Add</button></div></div></li>');
 				}
@@ -55,21 +55,43 @@
 			breadcrumbItem.push('<li><a href="index.html">Home</a></li><li class = "active">', name ,'</li>');
 			el('breadcrumbDetails').innerHTML = breadcrumbItem.join('');
 
-			var catname = 'cat'.id;
-			el('catname').setAttribute("class", "active");
 
 	}
 
 
 	//handle to deploy the detail of products
-	
+	el('productListDetails').onclick = function(e) {
+
+			var target = e.target,
+	      parent = target.parentNode.parentNode.parentNode,
+	      id = parent.id.replace(/^prod/, '');
+
+			myLib.get({action:'prod_fetchOne',pid:id}, function(json){
+					var productListItems = [];
+
+					 productListItems.push('<h2 class="media-heading">',json[0].name,
+					 '</h2><div class="media"><a class="media-top" href="#"><img class="media-object" src="incl/img/', json[0].pid ,
+					  '.jpg" width="200" height="200" alt="productcell"></a><div class="media-body"><p></p><h4 class="media-heading">$',
+						 json[0].price , '</h4><button type="button" class="btn .btn-primary">Add</button></div></div><h5>Description:</h5><P>',
+						 json[0].description,'</P>');
+
+					 el('productListDetails').innerHTML = productListItems.join('');
+
+				});
+
+			//update the breadcrumb and subNavibar
+			var breadcrumbItem = [];
+			breadcrumbItem.push('<li><a href="index.html">Home</a></li><li class = "active">', name ,'</li>');
+			el('breadcrumbDetails').innerHTML = breadcrumbItem.join('');
+
+	}
 
 
 
 })();
 
 
-var shoppingCart = new Array();
+var shoppingCart = [];
 var sum = 0;
 
 function addToCart(productName,productPrice){

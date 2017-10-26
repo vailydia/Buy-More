@@ -179,10 +179,6 @@ function ierg4210_prod_edit() {
 		exit();
 
 
-
-
-
-
 }
 
 function ierg4210_prod_delete() {
