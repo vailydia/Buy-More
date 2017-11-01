@@ -11,7 +11,7 @@
 							productListItem.push('<li id="prod' , parseInt(prod.pid) ,'">',
 							 '<div class = "media"><a class="media-top" href="#"><img class="media-object" src="incl/img/' , prod.pid , '.jpg" width="100" height="100" alt="productcell"></a>' ,
 							 '<div class="media-body"><h4 class="media-heading">', '<span class="name">' , prod.name.escapeHTML() , '</span></h4>$',prod.price,'&nbsp&nbsp&nbsp',
-							 '<button type="button">Add</button></div></div></li>');
+							 '<button class="addButton" type="button">Add</button></div></div></li>');
 					}
 					if(i == json.length){
 						el('productListDetails').innerHTML = productListItem.join('');
@@ -66,18 +66,33 @@
 	      parent = target.parentNode.parentNode.parentNode,
 	      id = parent.id.replace(/^prod/, '');
 
-			myLib.get({action:'prod_fetchOne',pid:id}, function(json){
-					var productListItems = [];
+			if('addButton' === target.className){
 
-					 productListItems.push('<h2 class="media-heading">',json[0].name,
-					 '</h2><div class="media"><a class="media-top" href="#"><img class="media-object" src="incl/img/', json[0].pid ,
-					  '.jpg" width="200" height="200" alt="productcell"></a><div class="media-body"><p></p><h4 class="media-heading">$',
-						 json[0].price , '</h4><button type="button" class="btn .btn-primary">Add</button></div></div><h5>Description:</h5><P>',
-						 json[0].description,'</P>');
+				myLib.get({action:'prod_fetchOne',pid:id}, function(json){
+						var prodName = json[0].name;
+						var prodPrice = parseInt(json[0].price);
 
-					 el('productListDetails').innerHTML = productListItems.join('');
+						addToCart(prodName,prodPrice,id);
 
-				});
+					});
+
+			}else{
+
+				myLib.get({action:'prod_fetchOne',pid:id}, function(json){
+						var productListItems = [];
+
+						 productListItems.push('<h2 class="media-heading">',json[0].name,
+						 '</h2><div class="media"><a class="media-top" href="#"><img class="media-object" src="incl/img/', json[0].pid ,
+						  '.jpg" width="200" height="200" alt="productcell"></a><div class="media-body"><p></p><h4 class="media-heading">$',
+							 json[0].price , '</h4><button type="button" class="btn .btn-primary">Add</button></div></div><h5>Description:</h5><P>',
+							 json[0].description,'</P>');
+
+						 el('productListDetails').innerHTML = productListItems.join('');
+
+					});
+
+
+			}
 
 			//update the breadcrumb and subNavibar
 			var breadcrumbItem = [];
@@ -91,45 +106,97 @@
 })();
 
 
-var shoppingCart = [];
-var sum = 0;
 
-function addToCart(productName,productPrice){
+var shoppingLists = {};
 
-    shoppingCart.push(productName);
-    sum = sum + productPrice;
+function addToCart(productName,productPrice,pid){
 
+		shoppingLists = window.localStorage.getItem('shoppingCart_storage');
+	  shoppingLists = shoppingLists ? JSON.parse(shoppingLists):{};
+
+		var contains = false;
+		jQuery.each(shoppingLists, function(id, val) {
+			if(parseInt(id) == parseInt(pid)) {
+				 contains = true;
+				 shoppingLists[id] = parseInt(val) + 1;
+			}
+		});
+		if(contains == false){
+			 shoppingLists[pid] = 1;
+		}
+
+		window.localStorage.setItem('shoppingCart_storage',JSON.stringify(shoppingLists));
+		showShoppingCart();
 }
 
 function showShoppingCart(){
 
-    var cartElement = document.getElementsByClassName("dropdown-content");
-    var para=document.createElement("p");
-    var text = "";
+	  shoppingLists = window.localStorage.getItem('shoppingCart_storage');
+	  shoppingLists = shoppingLists ? JSON.parse(shoppingLists):{};
+		var sum = 0;
 
-    for (var i = 0; i < shoppingCart.length; i++) {
-        var value = shoppingCart[i];
-        text += value + " ";
-    }
-    //var node=document.createTextNode(text);
-    //para.appendChild(node);
-    para.innerHTML = text;
+		var shoppingCartItems = [];
 
-    cartElement[0].insertBefore(para,cartElement[0].firstChild);
 
-    var total=document.createElement("p");
-    var sumNum=document.createTextNode("total: $"+ sum + " ");
-    total.appendChild(sumNum);
-    cartElement[0].insertBefore(total,para);
+		var count = Object.keys(shoppingLists).length;
+		count = count * 9;
 
-    cartElement[0].style.display = 'block';
+		jQuery.each(shoppingLists, function(id, val) {
+
+
+				myLib.get({action:'prod_fetchOne',pid:parseInt(id)}, function(json){
+						 sum = sum + parseInt(json[0].price) * parseInt(val);
+
+						 shoppingCartItems.push('<tr id="',id,'"><td>', json[0].name,'</td><td>edit:  ',json[0].price,
+						 '  x  <input size="5" type="number" id="numofProd" value=',val,
+						 '></input></td><td><button id="delete-prod" class="btn btn-danger btn-sm">delete</button></td></tr>');
+
+						 if(count === shoppingCartItems.length){
+
+								 var innerString = "Total Amount:   $";
+						 		 el('sum').innerHTML = innerString.concat(sum) ;
+						 		 el('shopping-cart').innerHTML = shoppingCartItems.join('');
+
+						 }
+
+					});
+
+		});
+
+		var cartElement = document.getElementsByClassName("dropdown-content");
+		cartElement[0].style.display = 'block';
+
+}
+
+function editShoppingCart() {
+
+	  el('delete-prod').addEventListener("click",
+		function(e) {
+				var parent = e.target.parentNode.parentNode;
+				var id = parent.id;
+				delete shoppingLists[id];
+				window.localStorage.setItem('shoppingCart_storage',JSON.stringify(shoppingLists));
+				showShoppingCart();
+
+		});
+
+
+		el('numofProd').addEventListener("input",
+		function(e){
+			var parent = e.target.parentNode.parentNode;
+			var id = parent.id;
+			shoppingLists[id] = e.target.value;
+			window.localStorage.setItem('shoppingCart_storage',JSON.stringify(shoppingLists));
+			showShoppingCart();
+
+		});
+
 
 }
 
 function closeShoppingCart() {
     var cartElement = document.getElementsByClassName("dropdown-content");
-    cartElement[0].removeChild(cartElement[0].childNodes[0]);
-    cartElement[0].removeChild(cartElement[0].childNodes[0]);
+		el('shopping-cart').innerHTML = "";
     cartElement[0].style.display = 'none';
 }
 

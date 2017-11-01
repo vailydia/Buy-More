@@ -68,10 +68,16 @@
   <div class="container">
 
       <div class="row row-content">
-        <div class="col-xs-12 col-sm-2 col-sm-push-10">
-          <div class="shoppingList btn" onmouseover="showShoppingCart()" onmouseout="closeShoppingCart()">
-            <button class="btn" id="listButton">Shopping List</button>
-            <div class="dropdown-content">
+        <div class="col-xs-12 col-sm-2 col-sm-push-9">
+          <div class="shoppingList btn">
+            <button class="btn" id="listButton" onmouseover="showShoppingCart()">Shopping List</button>
+            <div class="dropdown-content" onmouseover="editShoppingCart()">
+
+                <table id="shopping-cart">
+
+                </table>
+
+              <p id="sum"></p>
               <button type="button" class="btn btn-info">Checkout</button>
             </div>
           </div>

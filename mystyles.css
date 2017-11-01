@@ -101,16 +101,12 @@ padding: 10px 5px;
   display: none;
   position: absolute;
   background-color: #f1f1f1;
-  width: 127px;
+  width: 300px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
   padding: 12px 16px;
+  z-index: 10;
 }
 
-/*
-.shoppingList:hover .dropdown-content {
-  display: block;
-}
-*/
 
 .productTable {
   width: 100%;
@@ -130,4 +126,14 @@ padding: 10px 5px;
 
 .contentright {
   display: inline-block;
+}
+
+
+td, th {
+    text-align: left;
+    padding: 5px;
+}
+
+#numofProd {
+    width: 40px;
 }
