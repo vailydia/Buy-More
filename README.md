@@ -5,7 +5,7 @@ Name:Xi Weiling
 SID:1155096106
 
 
-##phase1, 2017.09.22：
+## phase1, 2017.09.22：
 
 1）create the laout of main page, refer to index.html;
 
@@ -15,7 +15,7 @@ SID:1155096106
 
 
 
-##phase2, 2017.10.26：
+## phase2, 2017.10.26：
 
 1）setup a secure server, include to instantiate a Virtual Cloud Machine and apply necessary security configurations;
 
@@ -36,3 +36,7 @@ Product Detail Page:
 ![describepic3](https://user-images.githubusercontent.com/30575412/32041244-05ada182-b9f9-11e7-99a5-d20638760f7d.png)
 
 
+
+## phase3, 2017.11.1：
+
+1）JS: Dynamically update# the shopping list
