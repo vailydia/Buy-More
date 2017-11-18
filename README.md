@@ -7,23 +7,23 @@ SID:1155096106
 
 ## phase1, 2017.09.22：
 
-1）create the laout of main page, refer to index.html;
+1) create the laout of main page, refer to index.html;
 
-2）create the product detail page, refer to product.html;
+2) create the product detail page, refer to product.html;
 
-3）design the shopping cart.
+3) design the shopping cart.
 
 
 
 ## phase2, 2017.10.26：
 
-1）setup a secure server, include to instantiate a Virtual Cloud Machine and apply necessary security configurations;
+1) setup a secure server, include to instantiate a Virtual Cloud Machine and apply necessary security configurations;
 
-2）create the database cart.db and admin panel, which allow to manipulate the db;
+2) create the database cart.db and admin panel, which allow to manipulate the db;
 
-3）update the index page and product detail page;
+3) update the index page and product detail page;
 
-4）some functions and features:
+4) some functions and features:
 
 Main Page:
 
@@ -39,4 +39,31 @@ Product Detail Page:
 
 ## phase3, 2017.11.1：
 
-1）JS: Dynamically update# the shopping list
+1) JS: Dynamically update# the shopping list
+
+
+
+## phase4, 2017.11.17：
+
+
+1) SQL Injection:
+Defence: Always Use prepared statements and parameterized queries. (PDO prepare in PHP);
+
+2) XSS:
+Defense: sanitization and validation (both client and server side);
+
+3) Admin Authentication:
+Defence: Only admin user can access admin panel;
+
+4) CSRF:
+Defence:
+Custom http request headers,
+Submit a hidden nonce with every form;
+
+5) SSL and Digital Certificate:
+Defence: Apply SSL certificate;
+
+6) Session Fixation:
+Defence: change session ID after logged.
+
+
