@@ -1,3 +1,16 @@
+<?php
+
+if(empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == "off") {
+
+    $redirect= "https:".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+    header("Location:$redirect");
+    exit();
+}
+
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -35,14 +48,28 @@
           </div>
           <div class="navbar-collapse collapse">
               <ul class="nav navbar-nav">
-                  <li><a class="active" href="#">Home</a></li>
-                  <li><a href="#">About</a></li>
-                   <li><a href="#">Contact</a></li>
+                  <li><a class="active" href="index.php">Home</a>
+                  <li><a class="active" href="admin.php">Admin Panel</a></li>
+                  <li><a class="active" href="#">About</a></li>
               </ul>
               <ul class="nav navbar-nav navbar-right">
-                  <li><a ng-click="openLogin()">
-                  <span class="glyphicon glyphicon-log-in"></span></a>
-                  </li>
+                  <li><a class="active" href="login.php"><span>Login</span></a></li>
+                  <li><a class="active" href="#">User:
+                    <?php
+                       if(!empty($_COOKIE['t4210'])){
+                         if($t = json_decode(stripslashes($_COOKIE['t4210']),true)) {
+                             if($t['em'] == "weiling@ierg4210.com"){
+                                echo "Admin";
+                             }else{
+                                echo "Normal User";
+                             }
+                         }
+                       }else{
+                          echo "No User";
+                       }
+                    ?></a></li>
+
+                   <li><a class="active" href="/auth-process.php?action=logout"><span>Logout</span></a></li>
               </ul>
           </div>
       </div>
@@ -103,9 +130,6 @@
                 <div class="col-xs-12">
                    <ul id="breadcrumbDetails" class="breadcrumb">
 
-                       <!--
-                       <li class="active">Clothing</li>
-                        -->
                    </ul>
                 </div>
             </div>
@@ -124,11 +148,17 @@
       <!-- test the admin panel -->
       <div class="row row-content">
         <div id="adminPaneldiv">
-
+          <!--
           <button id = "adminPanel" class="btn" data-toggle="modal" data-target="#myModal">
           	Open Admin Panel
           </button>
-          <!-- 模态框（Modal） -->
+          -->
+          <div id="adminPanel">
+          	<a href="admin.php">Open Admin Panel</a>
+          </div>
+
+          <!--
+
           <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
           	<div class="modal-dialog">
           		<div class="modal-content">
@@ -141,8 +171,7 @@
           				</h4>
           			</div>
           			<div class="modal-body">
-                  <!-- 在这里添加一些文本 -->
-                  <!-- category panel -->
+
                   <section id="categoryPanel">
                     <fieldset>
                       <legend>New Category</legend>
@@ -153,7 +182,6 @@
                       </form>
                     </fieldset>
 
-                    <!-- Generate the existing categories here -->
 
                     <h3>All categories in the database are :</h>
                     <ul id="categoryList"></ul>
@@ -173,7 +201,7 @@
                     </fieldset>
                   </section>
 
-                  <!-- product panel -->
+
                   <section id="productPanel">
                     <fieldset>
                       <legend>New Product</legend>
@@ -198,17 +226,13 @@
                     </fieldset>
 
                     <h3>Products in the database are :</h>
-                    <!-- Generate the corresponding products here -->
+
                     <ul id="productList"></ul>
 
                   </section>
 
                   <section id="productEditPanel" class="hide">
-                      <!--
-                        Design your form for editing a product's catid, name, price, description and image
-                        - the original values/image should be prefilled in the relevant elements (i.e. <input>, <select>, <textarea>, <img>)
-                        - prompt for input errors if any, then submit the form to admin-process.php (AJAX is not required)
-                      -->
+
 
                       <fieldset>
                         <legend>Edit Product</legend>
@@ -247,10 +271,10 @@
           				</button>
 
           			</div>
-          		</div><!-- /.modal-content -->
-          	</div><!-- /.modal -->
+          		</div>
+          	</div>
           </div>
-
+          -->
         </div>
       </div>
 
@@ -293,7 +317,6 @@
 <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="incl/myLib.js" type = "text/javascript"></script>
 <script src="myjs.js" type = "text/javascript"></script>
-<script src="admin-process.js" type = "text/javascript"></script>
 
 </body>
 

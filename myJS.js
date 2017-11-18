@@ -1,12 +1,25 @@
 
 (function(){
 
+	get = function(param, successCallback) {
+		param = param || {};
+		param.rnd =  new Date().getTime(); // to avoid caching in IE
+		myLib.processJSON('main-process.php?' + encodeParam(param), null, successCallback);
+	};
+
+	encodeParam = function(obj) {
+		var data = [];
+		for (var key in obj)
+			data.push(encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]));
+		return data.join('&');
+	}
+
 	function updateUI() {
-		myLib.get({action:'cat_fetchall'}, function(json){
+		get({action:'cat_fetchall'}, function(json){
 			for (var subNavibarItems = [],productListItem = [],i = 0, cat; cat = json[i]; i++) {
 				subNavibarItems.push('<li id="cat' , parseInt(cat.catid) ,'">', '<a href="#">' ,  '<span class="name">' , cat.name.escapeHTML() , '</span></a></li>');
 
-				myLib.get({action:'prod_fetch',catid:parseInt(cat.catid)}, function(jsonP){
+				get({action:'prod_fetch',catid:parseInt(cat.catid)}, function(jsonP){
 					for (var j = 0, prod; prod = jsonP[j]; j++) {
 							productListItem.push('<li id="prod' , parseInt(prod.pid) ,'">',
 							 '<div class = "media"><a class="media-top" href="#"><img class="media-object" src="incl/img/' , prod.pid , '.jpg" width="100" height="100" alt="productcell"></a>' ,
@@ -21,7 +34,7 @@
 
 			}
 			el('subnavbar').innerHTML = subNavibarItems.join('');
-			el('breadcrumbDetails').innerHTML = '<li class="active"><a href="index.html">Home</a></li>';
+			el('breadcrumbDetails').innerHTML = '<li class="active"><a href="index.php">Home</a></li>';
 
 		});
 
@@ -41,7 +54,7 @@
 				jQuery.each(shoppingLists, function(id, val) {
 
 
-						myLib.get({action:'prod_fetchOne',pid:parseInt(id)}, function(json){
+						get({action:'prod_fetchOne',pid:parseInt(id)}, function(json){
 								 sum = sum + parseInt(json[0].price) * parseInt(val);
 
 								 shoppingCartItems.push('<tr id="',id,'"><td>', json[0].name,'</td><td>edit:  ',json[0].price,
@@ -103,13 +116,14 @@
 			name = target.parentNode.querySelector('.name').innerHTML;
 
 
-			myLib.get({action:'prod_fetch',catid:id}, function(json){
+			get({action:'prod_fetch',catid:id}, function(json){
 				for (var productListItems = [],i = 0, prod; prod = json[i]; i++) {
 					  //productListItems.push('<li id="prod' , parseInt(prod.pid) ,'">', '<a href="#">' ,  '<span class="name">' , prod.name.escapeHTML() , '</span></a></li>');
 						productListItems.push('<li id="prod' , parseInt(prod.pid) ,'">',
 						 '<div class = "media"><a class="media-top" href="#"><img class="media-object" src="incl/img/' , prod.pid , '.jpg" width="100" height="100" alt="productcell"></a>' ,
 						 '<div class="media-body"><h4 class="media-heading">', '<span class="name">' , prod.name.escapeHTML() , '</span></h4>$',prod.price,'&nbsp&nbsp&nbsp',
-						 '<button type="button">Add</button></div></div></li>');
+						 '<button class="addButton" type="button">Add</button></div></div></li>');
+
 				}
 				el('productListDetails').innerHTML = productListItems.join('');
 
@@ -131,9 +145,9 @@
 	      parent = target.parentNode.parentNode.parentNode,
 	      id = parent.id.replace(/^prod/, '');
 
-			if('addButton' === target.className){
+			if('addButton' === target.className || 'productDetails' === target.className){
 
-				myLib.get({action:'prod_fetchOne',pid:id}, function(json){
+				get({action:'prod_fetchOne',pid:id}, function(json){
 						var prodName = json[0].name;
 						var prodPrice = parseInt(json[0].price);
 
@@ -141,15 +155,28 @@
 
 					});
 
-			}else{
+			}
 
-				myLib.get({action:'prod_fetchOne',pid:id}, function(json){
+			//click add button in detail product page
+			else if ('productDetails' === target.className) {
+				get({action:'prod_fetchOne',pid:id}, function(json){
+						var prodName = json[0].name;
+						var prodPrice = parseInt(json[0].price);
+
+						addToCart(prodName,prodPrice,id);
+
+					});
+			}
+
+			else{
+
+				get({action:'prod_fetchOne',pid:id}, function(json){
 						var productListItems = [];
 
 						 productListItems.push('<h2 class="media-heading">',json[0].name,
 						 '</h2><div class="media"><a class="media-top" href="#"><img class="media-object" src="incl/img/', json[0].pid ,
-						  '.jpg" width="200" height="200" alt="productcell"></a><div class="media-body"><p></p><h4 class="media-heading">$',
-							 json[0].price , '</h4><button type="button" class="btn .btn-primary">Add</button></div></div><h5>Description:</h5><P>',
+						  '.jpg" width="200" height="200" alt="productcell"></a><div id="prod',id, '" class="media-body"><p></p><h4 class="media-heading">$',
+							 json[0].price , '</h4><div><div><button class="productDetails" type="button">Add</button></div></div></div></div><h5>Description:</h5><P>',
 							 json[0].description,'</P>');
 
 						 el('productListDetails').innerHTML = productListItems.join('');
@@ -161,11 +188,10 @@
 
 			//update the breadcrumb and subNavibar
 			var breadcrumbItem = [];
-			breadcrumbItem.push('<li><a href="index.html">Home</a></li><li class = "active">', name ,'</li>');
+			breadcrumbItem.push('<li><a href="index.php">Home</a></li><li class = "active">', name ,'</li>');
 			el('breadcrumbDetails').innerHTML = breadcrumbItem.join('');
 
 	}
-
 
 
 })();
@@ -209,7 +235,7 @@ function showShoppingCart(){
 		jQuery.each(shoppingLists, function(id, val) {
 
 
-				myLib.get({action:'prod_fetchOne',pid:parseInt(id)}, function(json){
+				get({action:'prod_fetchOne',pid:parseInt(id)}, function(json){
 						 sum = sum + parseInt(json[0].price) * parseInt(val);
 
 						 shoppingCartItems.push('<tr id="',id,'"><td>', json[0].name,'</td><td>edit:  ',json[0].price,

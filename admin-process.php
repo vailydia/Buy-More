@@ -1,5 +1,15 @@
 <?php
-include_once('lib/db.inc.php');
+
+session_start();
+include_once ('lib/csrf.php');
+include_once ('lib/db.inc.php');
+include_once ('lib/makeAuth.php');
+
+
+if(!auth_process()){
+	header('Location: login.php');
+	exit();
+}
 
 
 function ierg4210_cat_fetchall() {
@@ -79,6 +89,7 @@ function ierg4210_prod_insert() {
 	// The lastInsertId() function returns the pid (primary key) resulted by the last INSERT command
 	//$lastId = $db->lastInsertId();
 	// Copy the uploaded file to a folder which can be publicly accessible at incl/img/[pid].jpg
+
 	if ($_FILES["file"]["error"] == 0
 		&& $_FILES["file"]["type"] == "image/jpeg"
 		&& mime_content_type($_FILES["file"]["tmp_name"]) == "image/jpeg"
@@ -92,7 +103,7 @@ function ierg4210_prod_insert() {
 		if (move_uploaded_file($_FILES["file"]["tmp_name"], "incl/img/" . $lastId . ".jpg")) {
 		// redirect back to original page; you may comment it during debug
 			//echo " move success ";
-			header('Location: index.html');
+			header('Location: admin.php');
 			exit();
 		}
 	}
@@ -166,7 +177,7 @@ function ierg4210_prod_edit() {
 			if (move_uploaded_file($_FILES["file"]["tmp_name"], "incl/img/" . $_POST['pid']. ".jpg")) {
 			// redirect back to original page; you may comment it during debug
 				//echo " move success ";
-				header('Location: index.html');
+				header('Location: admin.php');
 				exit();
 			}
 		}
@@ -203,7 +214,6 @@ function ierg4210_prod_delete() {
 
 
 
-
 header('Content-Type: application/json');
 
 // input validation
@@ -216,6 +226,18 @@ if (empty($_REQUEST['action']) || !preg_match('/^\w+$/', $_REQUEST['action'])) {
 //   (e.g. When $_REQUEST['action'] is 'cat_insert', the function ierg4210_cat_insert() is called)
 // the return values of the functions are then encoded in JSON format and used as output
 try {
+
+	//input validation
+	if (empty($_REQUEST['action']) || !preg_match('/^\w+$/', $_REQUEST['action'])) {
+			throw new Exception('Undefined Action');
+	}
+
+	//check if the form request can present a valid nonce
+	if($_REQUEST['action']) {
+			csrf_verifyNonce($_REQUEST['action'],$_POST['nonce']);
+	}
+
+
 	if (($returnVal = call_user_func('ierg4210_' . $_REQUEST['action'])) === false) {
 		if ($db && $db->errorCode())
 			error_log(print_r($db->errorInfo(), true));
