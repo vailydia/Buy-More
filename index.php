@@ -100,12 +100,30 @@ if(empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] == "off") {
             <button class="btn" id="listButton">Shopping List</button>
             <div class="dropdown-content">
 
-                <table id="shopping-cart">
+              <form method="POST" action="<?php echo ($pay_url = 'https://www.sandbox.paypal.com/cgi-bin/webscr'); ?>" onsubmit="submitShoppingCart(this)">
 
-                </table>
+                <table id="shopping-cart"></table>
+                <input type="hidden" name="cmd" value="_xclick"/>
 
-              <p id="sum"></p>
-              <button type="button" class="btn btn-info">Checkout</button>
+                <!-- Identify your business so that you can collect the payments. -->
+                <input type="hidden" name="business" value="<?php echo ($paypalID='vailydia-facilitator@hotmail.com'); ?>"/>
+
+                <!-- Specify details about the item that buyers will purchase. -->
+                <input type="hidden" name="item_name" value="<?php echo ($item='BuyMore Items'); ?>" />
+
+                <input type="hidden" name="lc" value="HK"/>
+                <input type="hidden" name="currency_code" value="HKD"/>
+                <input type="hidden" name="charset" value="utf-8"/>
+                <input type="hidden" name="payer_email" value="0" />
+
+                <!-- get from server side. -->
+                <input type="hidden" name="amount" value=0 />
+                <input type="hidden" name="custom" value="0"/>
+                <input type="hidden" name="invoice" value="0"/>
+
+                <p id="sum"></p>
+                <input id="btncheckout" type="submit" value="Checkout"/>
+              </form>
             </div>
           </div>
         </div>

@@ -200,6 +200,38 @@
 
 var shoppingLists = {};
 
+function submitShoppingCart(form) {
+
+	var buyList = "";
+	shoppingLists = window.localStorage.getItem('shoppingCart_storage');
+	shoppingLists = shoppingLists ? JSON.parse(shoppingLists):{};
+
+	for(var i in shoppingLists){
+		//buyList[i] = parseInt(shoppingLists[i]); //combine the pid and quantity into array
+		buyList = buyList + i + "," + shoppingLists[i] + ",";
+	}
+
+
+	myLib.processJSON(
+		    "checkout-process.php",
+		    {action: "handle_checkout", list:buyList},
+		    function(returnValue){
+
+					form.custom.value = returnValue.digest;
+					form.invoice.value = returnValue.invoice;
+					form.amount.value = returnValue.amount;
+					form.submit();
+
+					for (var i in shoppingLists) {
+						 window.localStorage.removeItem(shoppingLists[i]); //remove local storage
+					}
+					window.localStorage.removeItem('shoppingCart_storage');
+			},
+		    {method:"POST"});
+
+	return false;
+}
+
 function addToCart(productName,productPrice,pid){
 
 		shoppingLists = window.localStorage.getItem('shoppingCart_storage');
