@@ -148,11 +148,33 @@ if(!auth_process()){
 
 </section>
 
+
+<section>
+	<fieldset>
+		<legend>Latest 50 Transaction Records</legend>
+		<ul id="ordersList"></ul>
+
+  </fieldset>
+</section>
+
+
 <div class="clear"></div>
 </article>
 <script type="text/javascript" src="incl/myLib.js"></script>
 <script type="text/javascript">
 (function(){
+	get = function(param, successCallback) {
+		param = param || {};
+		param.rnd =  new Date().getTime(); // to avoid caching in IE
+		myLib.processJSON('checkout-process.php?' + encodeParam(param), null, successCallback);
+	};
+
+	encodeParam = function(obj) {
+		var data = [];
+		for (var key in obj)
+			data.push(encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]));
+		return data.join('&');
+	}
 
 	function updateUI() {
 		myLib.get({action:'cat_fetchall'}, function(json){
@@ -169,6 +191,21 @@ if(!auth_process()){
 		el('productList').innerHTML = '';
 	}
 	updateUI();
+
+	function updateOrdersList() {
+		get({action:'order_fetchall'}, function(json){
+			for (var listItems = [],i = 0, order; order = json[i]; i++) {
+				listItems.push('<li id="order' , parseInt(order.oid) , '"><span class="user">' ,
+				order.user, '</span><span class="digest">',order.digest , '</span><span class="salt">',order.salt ,
+				 '</span><span class="tid">',order.paid ,'</span></li>');
+			}
+			el('ordersList') = innerHTML = listItems.join('');
+
+		});
+
+	}
+
+	updateOrdersList();
 
 	el('categoryList').onclick = function(e) {
 		if (e.target.tagName != 'SPAN')

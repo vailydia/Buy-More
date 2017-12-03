@@ -2,8 +2,6 @@
 <?php
 session_start();
 include_once ('lib/csrf.php');
-include_once ('lib/auth.php');
-
 
 if ($_SESSION['t4210']){
     //avoid repeat login

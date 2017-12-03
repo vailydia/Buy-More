@@ -17,6 +17,8 @@
 	updateUI();
 
 
+
+
 	el('categoryList').onclick = function(e) {
 		if (e.target.tagName != 'SPAN')
 			return false;

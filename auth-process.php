@@ -28,7 +28,7 @@ function ierg4210_login() {
     } else {
         //header('Location:index.php', true, 302);
         header('Refresh: 2; url=index.php');
-      	echo '<strong>Error Occurred: You have no permission.</strong> <br/>Redirecting to index page in 2 seconds...';
+      	echo '<strong>You have no permission.</strong> <br/>Redirecting to index page in 2 seconds...';
         //throw new Exception('Wrong Credentials');
     }
 
@@ -124,6 +124,7 @@ try {
 
     //check if the form request can present a valid nonce
     if($_REQUEST['action'] == 'login') {
+        error_log("begin to verify nonce:" . $_POST['nonce']);
         csrf_verifyNonce($_REQUEST['action'],$_POST['nonce']);
     }
 
