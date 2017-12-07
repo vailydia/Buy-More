@@ -49,25 +49,24 @@ include_once ('lib/csrf.php');
               </ul>
               <ul class="nav navbar-nav navbar-right">
                   <li><a class="active" href="login.php"><span>Login</span></a></li>
-                  <li><a class="active" href="#">User:
+                  <li><a id="userInfo" href="login.php">Hello:
                     <?php
                        if(!empty($_COOKIE['t4210'])){
                          if($t = json_decode(stripslashes($_COOKIE['t4210']),true)) {
-                             if($t['em'] == "weiling@ierg4210.com"){
-                                echo "Admin";
-                             }else{
-                                echo "Normal User";
+                             if($t['em']){
+                                echo $t['em'];
                              }
                          }
                        }else{
-                          echo "No User";
+                          echo "Guest";
                        }
-                    ?></a></li>
+                    ?></a>
+                  </li>
 
-                   <li><form id="logoutForm" method="POST" action="auth-process.php?action=<?php  echo ($action='logout');  ?>">
+                   <li><a><form id="logoutForm" method="POST" action="auth-process.php?action=<?php  echo ($action='logout');  ?>">
                     <input type="hidden" name="nonce" value="<?php  echo csrf_getNonce($action);   ?>" />
                			<input type="submit" value="Logout" />
-               		</form></li>
+               		</form></a></li>
 
               </ul>
           </div>
@@ -197,7 +196,7 @@ include_once ('lib/csrf.php');
 
                   <div>
                       <br><br><br><br>
-                      <a class="btn btn-social-icon btn-facebook" href="http://www.facebook.com/profile.php?id="><i class="fa fa-facebook"></i></a>
+                      <a class="btn btn-social-icon btn-facebook" href="http://www.facebook.com/"><i class="fa fa-facebook"></i></a>
                       <a class="btn btn-social-icon btn-twitter" href="http://twitter.com/"><i class="fa fa-twitter"></i></a>
                       <a class="btn btn-social-icon btn-youtube" href="http://youtube.com/"><i class="fa fa-youtube"></i></a>
                   </div>

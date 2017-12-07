@@ -12,7 +12,7 @@ function ierg4210_login() {
     || !preg_match("/^[\w=+\-\/][\w='+\-\/\.]*@[\w\-]+(\.[\w\-]+)*(\.[\w]{2,6})$/",$_POST['email'])
     || !preg_match("/^[\w@#$%\^\&\*\-]+$/", $_POST['password']))
     {
-      throw new Exception('Wrong Credentials');
+      throw new Exception('Please input appropriate email or password');
     }
 
     //Implement the login logic here
@@ -27,13 +27,44 @@ function ierg4210_login() {
         exit();
     } else {
         //header('Location:index.php', true, 302);
-        header('Refresh: 2; url=index.php');
-      	echo '<strong>You have no permission.</strong> <br/>Redirecting to index page in 2 seconds...';
+        header('Refresh: 1; url=login.php');
+      	echo '<strong>You have no permission to admin panel.</strong> <br/>Redirecting to login page in 2 seconds...';
         //throw new Exception('Wrong Credentials');
     }
 
 }
 
+
+
+function ierg4210_signUp() {
+
+    if ( empty($_POST['email']) || empty($_POST['password'])
+    || !preg_match("/^[\w=+\-\/][\w='+\-\/\.]*@[\w\-]+(\.[\w\-]+)*(\.[\w]{2,6})$/",$_POST['email'])
+    || !preg_match("/^[\w@#$%\^\&\*\-]+$/", $_POST['password']))
+    {
+      throw new Exception('Please input appropriate email or password');
+      header('Refresh:1; url=login.php');
+      exit();
+    }
+
+    //new users
+    global $db;
+    $db = ierg4210_DB();
+    $email = $_POST['email'];
+    $salt = mt_rand();
+    $password = $_POST['password'];
+
+
+    $salted_password = hash_hmac('sha1',$password, $salt);
+
+    $q = $db->prepare("INSERT INTO users (email,salt,password,flag) VALUES (?, ?, ?, ?)");
+    if($q->execute(array($email,$salt,$salted_password,0))){
+        ierg4210_login();
+    }
+
+    header('Location:index.php');
+    exit();
+}
 
 
 
@@ -45,6 +76,42 @@ function ierg4210_logout() {
     //redirect to login page after logout
     header('Location:login.php');
     exit();
+
+}
+
+
+function ierg4210_changePw() {
+    global $db;
+    $db = ierg4210_DB();
+    $email = $_POST['email'];
+    $oldPw = $_POST['oldPassword'];
+    $newPw = $_POST['newPassword'];
+
+    $q = $db->prepare("SELECT * FROM users WHERE email = ?");
+    $q->execute(array($email));
+
+    if($r = $q->fetch()){
+
+        $saltPassword = hash_hmac('sha1', $oldPw, $r['salt']);
+        if($saltPassword == $r['password']){
+
+            $salt = mt_rand();
+            $salted_password = hash_hmac('sha1',$newPw, $salt);
+
+            $k = $db->prepare("UPDATE users SET salt=?,password=? WHERE email = ?;");
+            if($k->execute(array($salt,$salted_password,$email))){
+                ierg4210_logout();
+            }
+
+        }else{
+            alert('old password is wrong.');
+            exit();
+        }
+
+     }else{
+         alert('user does not exist: ' + $email);
+         exit();
+     }
 
 }
 
@@ -72,7 +139,7 @@ function loginProcess($email, $password){
             'exp' => $exp,
             'k' => hash_hmac('sha1', $exp.$r['password'], $r['salt']));
 
-        setcookie('t4210', json_encode($token), $exp, '','',false,true);
+        setcookie('t4210', json_encode($token), $exp, '','',true,true);
         $_SESSION['t4210'] = $token;
 
         return false;
@@ -94,14 +161,6 @@ function loginProcess($email, $password){
       return false;
   }
 
-  //else: new users
-  //
-  // $q = $db->prepare("INSERT INTO users (email,salt,password,flag) VALUES (?,?,?,?)");
-  // $salt = mt_rand();
-  // $salted_password = hash_hmac('sha1',$password, $salt);
-  //
-  // $q->execute(array($email,$salt,$salted_password,0));
-
 	return false;
 }
 
@@ -120,7 +179,7 @@ try {
     }
 
     //check if the form request can present a valid nonce
-    if($_REQUEST['action'] == 'login' || $_REQUEST['action'] == 'logout') {
+    if($_REQUEST['action'] == 'login' || $_REQUEST['action'] == 'logout' || $_REQUEST['action'] == 'signUp' || $_REQUEST['action'] == 'changePw') {
         csrf_verifyNonce($_REQUEST['action'],$_POST['nonce']);
     }
 

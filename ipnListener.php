@@ -13,17 +13,6 @@ error_reporting(E_ALL ^ E_NOTICE);
 
 	error_log("req is: " .$req);
 
-	// assign posted variables to local variables
-	// $data['item_name']			= $_POST['item_name'];
-	// $data['item_number'] 		= $_POST['item_number'];
-	// $data['payment_status'] 	= $_POST['payment_status'];
-	// $data['payment_amount'] 	= $_POST['mc_gross'];
-	// $data['payment_currency']	= $_POST['mc_currency'];
-	// $data['txn_id']				= $_POST['txn_id'];
-	// $data['receiver_email'] 	= $_POST['receiver_email'];
-	// $data['payer_email'] 		= $_POST['payer_email'];
-	// $data['custom'] 			= $_POST['custom'];
-
 	// post back to PayPal system to validate
 	$header .= "POST /cgi-bin/webscr HTTP/1.1\r\n";
 	$header .= "Host: www.paypal.com\r\n";
@@ -61,16 +50,13 @@ error_reporting(E_ALL ^ E_NOTICE);
         // Check correct receiver_email
         $valid_email = check_email($_POST['receiver_email']);
 
-        // Check correct price
-				$valid_price = check_price($_POST['mc_gross'], $_POST['item_number']);
-
         // Check digest
 				$valid_digest = check_digest();
 
 
         // PAYMENT VALIDATED & VERIFIED!
         // If 'VERIFIED', update the order database record(notyet -> transactions id);
-				if ($valid_txnid && $valid_email && $valid_price && $valid_digest) {
+				if ($valid_txnid && $valid_email && $valid_digest) {
 
 					$comleted = updateOrders($_POST['txn_id']);
 					if ($comleted) {
@@ -113,7 +99,7 @@ error_reporting(E_ALL ^ E_NOTICE);
 
       $db = ierg4210_DB();
       $valid_txnid = true;
-      $q = $db->prepare("SELECT * FROM orders LIMIT 100;");
+      $q = $db->prepare("SELECT * FROM orders;");
       if ($q->execute()) {
           $cartOrders = $q->fetchAll();
       }
@@ -135,7 +121,6 @@ error_reporting(E_ALL ^ E_NOTICE);
   function check_email($receiver_email) {
       $email = 'vailydia-facilitator@hotmail.com';
       $valid_email = true;
-      error_log("test receiver email : ".$receiver_email);
       if($_POST['receiver_email'] == $email){
   			error_log("correct email");
   		}else{
@@ -145,17 +130,7 @@ error_reporting(E_ALL ^ E_NOTICE);
       return $valid_email;
   }
 
-
-  function check_price($price, $id) {
-	    $valid_price = false;
-	    //check whether the correct price has been paid for the product
-
-	    return true;
-  }
-
   function check_digest() {
-		  error_log('test digest . ');
-
 		  $valid_digest = false;
 
 			$db = ierg4210_DB();

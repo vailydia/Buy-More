@@ -14,6 +14,7 @@
 		return data.join('&');
 	}
 
+
 	function updateUI() {
 		get({action:'cat_fetchall'}, function(json){
 			for (var subNavibarItems = [],productListItem = [],i = 0, cat; cat = json[i]; i++) {
@@ -142,7 +143,7 @@
 			var target = e.target,
 	      parent = target.parentNode.parentNode.parentNode,
 	      id = parent.id.replace(/^prod/, '');
-				name = target.parentNode.querySelector('.name').innerHTML;
+				name = parent.id;
 
 			if('addButton' === target.className || 'productDetails' === target.className){
 
@@ -151,17 +152,6 @@
 						var prodPrice = parseInt(json[0].price);
 
 						addToCart(prodName,prodPrice,id);
-					});
-			}
-
-			//click add button in detail product page
-			else if ('productDetails' === target.className) {
-				get({action:'prod_fetchOne',pid:id}, function(json){
-						var prodName = json[0].name;
-						var prodPrice = parseInt(json[0].price);
-
-						addToCart(prodName,prodPrice,id);
-
 					});
 			}
 

@@ -99,6 +99,16 @@ padding: 10px 5px;
 }
 
 
+#ordersListOfUser li span.user {display: inline-block; width: 200px;text-align: left;}
+#ordersListOfUser li span.digest {display: inline-block; width: 400px;text-align: left;}
+#ordersListOfUser li span.salt {display: inline-block; width: 200px;text-align: left;}
+#ordersListOfUser li span.tid {display: inline-block; width: 200px;text-align: left;}
+
+#ordersListOfUser {
+  width: 1000px;
+  list-style:none;
+}
+
 .productTable {
   width: 100%;
   list-style:none;
