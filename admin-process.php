@@ -233,7 +233,7 @@ try {
 	}
 
 	//check if the form request can present a valid nonce
-	if($_REQUEST['action']) {
+	if($_REQUEST['action'] == 'cat_insert' || $_REQUEST['action'] == 'cat_edit' || $_REQUEST['action'] == 'prod_insert' || $_REQUEST['action'] == 'prod_edit') {
 			csrf_verifyNonce($_REQUEST['action'],$_POST['nonce']);
 	}
 

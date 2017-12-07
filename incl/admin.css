@@ -17,5 +17,16 @@ input[type=text],input[type=number],select,textarea{width:200px}
 #productList span.edit, #productList span.delete{float:right;padding-right:40px}
 
 
+#ordersList li span.user {display: inline-block; width: 200px;text-align: left;}
+#ordersList li span.digest {display: inline-block; width: 400px;text-align: left;}
+#ordersList li span.salt {display: inline-block; width: 200px;text-align: left;}
+#ordersList li span.tid {display: inline-block; width: 200px;text-align: left;}
+
+#ordersList {
+  width: 1000px;
+  list-style:none;
+}
+
+
 .hide{display:none}
 .clear{clear:both}

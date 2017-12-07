@@ -30,19 +30,18 @@ if(!auth_process()){
 
 		<ul>
 			  <li><a href="/index.php">Back to Home</a></li>
-				<li><a href="/auth-process.php?action=<?php  echo ($action='login');  ?>"><span>Login</span></a></li>
 				<li><span>User:</span>
-					<a href="/auth-process.php?action=<?php  echo ($action='login');  ?>">
 					<span><?php
-
 						 if(!empty($_SESSION['t4210'])){
 								echo $_SESSION['t4210']['em'];
 						 }else{
 								echo "No User";
 						 }
-						 ?></span></a></li>
-
-				 <li><a href="/auth-process.php?action=<?php  echo ($action='logout');  ?>"><span>Logout</span></a></li>
+						 ?></span></li>
+				 <li><form id="logoutForm" method="POST" action="auth-process.php?action=<?php  echo ($action='logout');  ?>">
+					<input type="hidden" name="nonce" value="<?php  echo csrf_getNonce($action);   ?>" />
+					 <input type="submit" value="Logout" />
+				 </form></li>
 		</ul>
 
 
@@ -141,7 +140,6 @@ if(!auth_process()){
 				<input type="button" id="prod_edit_cancel" value="Cancel" />
 
 				<input type="hidden" name="nonce" value="<?php  echo csrf_getNonce($action);   ?>" />
-				<input type="submit" value="Submit" />
 			</form>
 
 		</fieldset>
@@ -149,11 +147,10 @@ if(!auth_process()){
 </section>
 
 
-<section>
+<section id="ordersPanel">
 	<fieldset>
 		<legend>Latest 50 Transaction Records</legend>
 		<ul id="ordersList"></ul>
-
   </fieldset>
 </section>
 
@@ -174,7 +171,7 @@ if(!auth_process()){
 		for (var key in obj)
 			data.push(encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]));
 		return data.join('&');
-	}
+	};
 
 	function updateUI() {
 		myLib.get({action:'cat_fetchall'}, function(json){
@@ -193,13 +190,17 @@ if(!auth_process()){
 	updateUI();
 
 	function updateOrdersList() {
+		var listItems = [];
+
+		listItems.push('<li><span class="user">customer</span><span class="digest">digest</span><span class="salt">salt</span><span class="tid">tid</span></li>');
+
 		get({action:'order_fetchall'}, function(json){
-			for (var listItems = [],i = 0, order; order = json[i]; i++) {
+			for (var i = 0, order; order = json[i]; i++) {
 				listItems.push('<li id="order' , parseInt(order.oid) , '"><span class="user">' ,
 				order.user, '</span><span class="digest">',order.digest , '</span><span class="salt">',order.salt ,
 				 '</span><span class="tid">',order.paid ,'</span></li>');
 			}
-			el('ordersList') = innerHTML = listItems.join('');
+			el('ordersList').innerHTML = listItems.join('');
 
 		});
 

@@ -131,10 +131,8 @@
 
 			//update the breadcrumb and subNavibar
 			var breadcrumbItem = [];
-			breadcrumbItem.push('<li><a href="index.html">Home</a></li><li class = "active">', name ,'</li>');
+			breadcrumbItem.push('<li><a href="index.php">Home</a></li><li class = "active">', name ,'</li>');
 			el('breadcrumbDetails').innerHTML = breadcrumbItem.join('');
-
-
 	}
 
 
@@ -144,6 +142,7 @@
 			var target = e.target,
 	      parent = target.parentNode.parentNode.parentNode,
 	      id = parent.id.replace(/^prod/, '');
+				name = target.parentNode.querySelector('.name').innerHTML;
 
 			if('addButton' === target.className || 'productDetails' === target.className){
 
@@ -152,9 +151,7 @@
 						var prodPrice = parseInt(json[0].price);
 
 						addToCart(prodName,prodPrice,id);
-
 					});
-
 			}
 
 			//click add button in detail product page
@@ -193,14 +190,13 @@
 
 	}
 
-
 })();
-
 
 
 var shoppingLists = {};
 
-function submitShoppingCart(form) {
+function submitShoppingCart() {
+	var form = el('checkout_form');
 
 	var buyList = "";
 	shoppingLists = window.localStorage.getItem('shoppingCart_storage');
@@ -211,25 +207,71 @@ function submitShoppingCart(form) {
 		buyList = buyList + i + "," + shoppingLists[i] + ",";
 	}
 
+	get = function(param, successCallback) {
+		param = param || {};
+		param.rnd =  new Date().getTime(); // to avoid caching in IE
+		myLib.processJSON('main-process.php?' + encodeParam(param), null, successCallback);
+	};
+
+	encodeParam = function(obj) {
+		var data = [];
+		for (var key in obj)
+			data.push(encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]));
+		return data.join('&');
+	}
 
 	myLib.processJSON(
 		    "checkout-process.php",
 		    {action: "handle_checkout", list:buyList},
 		    function(returnValue){
 
-					form.custom.value = returnValue.digest;
-					form.invoice.value = returnValue.invoice;
-					form.amount.value = returnValue.amount;
-					form.submit();
+						form.custom.value = returnValue.digest;
+						form.invoice.value = returnValue.invoice;
 
-					for (var i in shoppingLists) {
-						 window.localStorage.removeItem(shoppingLists[i]); //remove local storage
-					}
-					window.localStorage.removeItem('shoppingCart_storage');
+					//Specify details about the item that buyers will purchase.
+					var index = 1;
+					for (var i in shoppingLists){
+						 get({action:'prod_fetchOne',pid:parseInt(i)}, function(json){
+								 // Create <input> for name, number, quantity, and price
+								 var name_input = document.createElement("input");
+								 name_input.type = "hidden";
+								 name_input.name = "item_name_" + index;
+								 name_input.value = json[0].name;
+								 form.appendChild(name_input);
+
+								 var number_input = document.createElement("input");
+								 number_input.type = "hidden";
+								 number_input.name = "item_number_" + index;
+								 number_input.value = "item" + json[0].pid;
+								 form.appendChild(number_input);
+
+								 var quantity_input = document.createElement("input");
+								 quantity_input.type = "hidden";
+								 quantity_input.name = "quantity_" + index;
+								 quantity_input.value = parseInt(shoppingLists[json[0].pid]);
+								 form.appendChild(quantity_input);
+
+								 var price_input = document.createElement("input");
+								 price_input.type = "hidden";
+								 price_input.name = "amount_" + index;
+								 price_input.value = json[0].price;
+								 form.appendChild(price_input);
+
+								 if(index == Object.keys(shoppingLists).length){
+										 form.submit();
+										 for (var j in shoppingLists) {
+												window.localStorage.removeItem(shoppingLists[j]); //remove local storage
+										 }
+										 window.localStorage.removeItem('shoppingCart_storage');
+								 }
+
+								 index += 1;
+						 });
+				  }
 			},
 		    {method:"POST"});
 
-	return false;
+	//return false;
 }
 
 function addToCart(productName,productPrice,pid){
@@ -241,11 +283,11 @@ function addToCart(productName,productPrice,pid){
 		jQuery.each(shoppingLists, function(id, val) {
 			if(parseInt(id) == parseInt(pid)) {
 				 contains = true;
-				 shoppingLists[id] = parseInt(val) + 1;
+				 shoppingLists[parseInt(id)] = parseInt(val) + 1;
 			}
 		});
 		if(contains == false){
-			 shoppingLists[pid] = 1;
+			 shoppingLists[parseInt(pid)] = 1;
 		}
 
 		window.localStorage.setItem('shoppingCart_storage',JSON.stringify(shoppingLists));
@@ -260,12 +302,10 @@ function showShoppingCart(){
 
 		var shoppingCartItems = [];
 
-
 		var count = Object.keys(shoppingLists).length;
 		count = count * 9;
 
 		jQuery.each(shoppingLists, function(id, val) {
-
 
 				get({action:'prod_fetchOne',pid:parseInt(id)}, function(json){
 						 sum = sum + parseInt(json[0].price) * parseInt(val);

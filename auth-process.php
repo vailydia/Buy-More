@@ -93,9 +93,6 @@ function loginProcess($email, $password){
       }
       return false;
   }
-  echo '<script language="javascript">';
-  echo 'alert("Invalid name or password")';
-  echo '</script>';
 
   //else: new users
   //
@@ -123,18 +120,16 @@ try {
     }
 
     //check if the form request can present a valid nonce
-    if($_REQUEST['action'] == 'login') {
-        error_log("begin to verify nonce:" . $_POST['nonce']);
+    if($_REQUEST['action'] == 'login' || $_REQUEST['action'] == 'logout') {
         csrf_verifyNonce($_REQUEST['action'],$_POST['nonce']);
     }
 
+    if (($returnVal = call_user_func('ierg4210_' . $_REQUEST['action'])) === false) {
+      if ($db && $db->errorCode())
+        error_log(print_r($db->errorInfo(), true));
+       throw new Exception('Failed');
+    }
 
-    // run the corresponding function according to action
-	if (($returnVal = call_user_func('ierg4210_' . $_REQUEST['action'])) === false) {
-		if ($db && $db->errorCode())
-			error_log(print_r($db->errorInfo(), true));
-    throw new Exception('Failed');
-	}
 
 } catch(PDOException $e) {
 	error_log($e->getMessage());

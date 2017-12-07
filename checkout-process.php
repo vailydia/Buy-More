@@ -1,8 +1,9 @@
 
 <?php
 
+session_start();
 include_once ('lib/db.inc.php');
-
+//
 // if (empty($_SESSION['t4210'])){
 // 	header('Location: login.php');
 // 	exit();
@@ -46,7 +47,13 @@ function ierg4210_handle_checkout() {
   $digest = hash_hmac('sha1', $Currency. $MerchantEmail. $salt, $salt);
 
   $q = $db->prepare("INSERT INTO orders (user, digest, salt, paid) VALUES (?, ?, ?, ?)");
-  $q->execute(array($_SESSION['t4210']['em'], $digest, $salt, "notyet")); //insert digest
+  $userEmail;
+  if($_SESSION['t4210']['em']){
+    $userEmail=$_SESSION['t4210']['em'];
+  }else{
+    $userEmail='Guest';
+  }
+  $q->execute(array($userEmail, $digest, $salt, "notyet")); //insert digest
   $invoice=$db->lastInsertId();
 
   $returnValue=array("digest"=>$digest, "invoice"=>$invoice, "amount"=>$sumPrice);
@@ -59,7 +66,7 @@ function ierg4210_order_fetchall() {
 	// DB manipulation
 	global $db;
 	$db = ierg4210_DB();
-	$q = $db->prepare("SELECT * FROM orders LIMIT 50;");
+	$q = $db->prepare("SELECT * FROM orders ORDER BY oid DESC LIMIT 50;");
 	if ($q->execute())
 		return $q->fetchAll();
 }

@@ -12,22 +12,19 @@ function csrf_getNonce($action){
 	if (!isset($_SESSION['csrf_nonce']))
 		$_SESSION['csrf_nonce'] = array();
 	$_SESSION['csrf_nonce'][$action] = $nonce;
-	error_log("csrf-attck test get: ".$_SESSION['csrf_nonce'][$action]);
-
 	// Return the nonce
 	return $nonce;
 }
 // Check if the nonce returned by a form matches with the stored one.
 function csrf_verifyNonce($action, $receivedNonce){
-	error_log("csrf-attck test verify: ".$receivedNonce);
+
 	// We assume that $REQUEST['action'] is already validated
 	if (isset($receivedNonce) && $_SESSION['csrf_nonce'][$action] == $receivedNonce) {
 		//if ($_SESSION['authtoken']==null)
-			//unset($_SESSION['csrf_nonce'][$action]);
+		unset($_SESSION['csrf_nonce'][$action]);
 		return true;
 	}
 
-	error_log(".....csrf_nonce:".$_SESSION['csrf_nonce'][$action]);
 	throw new Exception('csrf-attack');
 }
 ?>
