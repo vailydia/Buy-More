@@ -80,7 +80,7 @@ Defence: change session ID after logged.
 
 
 
-## phase5, 2017.12.12：
+## phase6, 2017.12.12：
 
 1) Security: Configure all authentication cookies to use the Secure and HttpOnly flags; (1%)
 
