@@ -166,7 +166,16 @@ function ierg4210_prod_edit() {
     $_POST['pid'] = $_POST['pid'];
     $q = $db->prepare("UPDATE products SET catid=?,name=?,price=?,description=? WHERE pid = ?;");
 
-		if ($_FILES["file"]["error"] == 0
+    if($_FILES["cover_image"]["size"]==0){
+
+			$q->execute(array($_POST['catid'],$_POST['name'],$_POST['price'],$_POST['description'],$_POST['pid']));
+			header('Location: admin.php');
+			exit();
+
+		}
+
+
+		else if ($_FILES["file"]["error"] == 0
 			&& $_FILES["file"]["type"] == "image/jpeg"
 			&& mime_content_type($_FILES["file"]["tmp_name"]) == "image/jpeg"
 			&& $_FILES["file"]["size"] < 5000000) {

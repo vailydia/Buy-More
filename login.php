@@ -89,7 +89,7 @@ if($_SESSION['t4210']){
 
 <section id="orderInfo">
 	<fieldset>
-		<legend>Latest 5 Transaction Records</legend>
+		<legend>Latest Transaction Records</legend>
 		<ul id="ordersListOfUser">
 
 
@@ -121,7 +121,7 @@ if($_SESSION['t4210']){
 
 		get({action:'order_fetchall'}, function(json){
 			for (var i = 0, order; order = json[i]; i++) {
-				if(email == order.user){
+				if(email == order.user && (email != "Guest")){
 						listItems.push('<li id="order' , parseInt(order.oid) , '"><span class="user">' ,
 						order.user, '</span><span class="digest">',order.digest , '</span><span class="salt">',order.salt ,
 						 '</span><span class="tid">',order.paid ,'</span></li>');

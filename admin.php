@@ -133,7 +133,7 @@ if(!auth_process()){
 				<div><textarea id="prod_edit_description" name="description" pattern="^[\w\-\. ]+$"></textarea></div>
 
 				<label for="prod_insert_name">Image *</label>
-				<div><input type="file" name="file" required="true" accept="image/jpeg" /></div>
+				<div><input type="file" name="file" accept="image/jpeg" /></div>
 
 				<input type="hidden" id="prod_edit_pid" name="pid" />
 				<input type="submit" value="Submit" />
