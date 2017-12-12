@@ -154,7 +154,7 @@ function loginProcess($email, $password){
               'exp' => $exp,
               'k' => hash_hmac('sha1', $exp.$r['password'], $r['salt']));
 
-          setcookie('t4210', json_encode($token), $exp, '','',false,true);
+          setcookie('t4210', json_encode($token), $exp, '','',true,true);
           $_SESSION['t4210'] = $token;
           return true;
       }
