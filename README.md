@@ -2,7 +2,6 @@
 Class Project for IERG4210_2017.
 
 Name:Xi Weiling 
-SID:1155096106
 
 
 ## phase1, 2017.09.22：
