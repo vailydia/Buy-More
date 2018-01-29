@@ -2,6 +2,7 @@
 Class Project for IERG4210_2017.
 
 Name:Xi Weiling 
+Website URL: https://secure.s59.ierg4210.ie.cuhk.edu.hk/index.php
 
 
 ## phase1, 2017.09.22：
@@ -43,9 +44,6 @@ Product Detail Page:
 
 
 ## phase4, 2017.11.17：
-
-Domain name: https://secure.s59.ierg4210.ie.cuhk.edu.hk/index.php
-
 
 1) SQL Injection:
 Defence: Always Use prepared statements and parameterized queries. (PDO prepare in PHP);
