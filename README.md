@@ -1,4 +1,4 @@
-# IERG4210_2017
+# Buy More e-commerce website
 Class Project for IERG4210_2017.
 
 Name:Xi Weiling 
