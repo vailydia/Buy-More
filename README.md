@@ -1,7 +1,5 @@
 # Buy More e-commerce shopping website
-Class Project for IERG4210_2017.
 
-Name:Xi Weiling 
 Website URL: https://secure.s59.ierg4210.ie.cuhk.edu.hk/index.php
 
 
